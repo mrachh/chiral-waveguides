@@ -1,0 +1,3 @@
+[submodule "FLAM"]
+	path = FLAM
+	url = https://github.com/klho/FLAM
