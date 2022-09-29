@@ -1,16 +1,23 @@
 clear
 
+run ../../startup.m
+addpath ../../../fmm2d/matlab
 
-A = load('wavelike/everything_de1.mat');
+
+A = load('../hyperbolic/data/atoms.mat');
 
 dlam = A.s0;
 dk   = A.de;
 
+nover = 10;
 wavelam = 2*pi/dk;
-nx = 100;
-ny = 100;
 
-halfwave = wavelam/2;
+nx0 = 100;
+ny0 = 100;
+nx = nx0*nover;
+ny = ny0*nover;
+
+halfwave = wavelam/2/nover;
 
 
 xmin0 = -(nx-1)/2*halfwave;
@@ -28,23 +35,24 @@ ymin = ymin0 - dy/4;
 ymax = ymax0 + dy/4;
 
 
-xs = xmin:(halfwave/10):xmax;
-ys = ymin:(halfwave/10):ymax;
+xs = xmin:(halfwave/10*nover):xmax;
+ys = ymin:(halfwave/10*nover):ymax;
 
 natoms = nx*ny;
 xa = rand(natoms,1)*(xmax0-xmin0) + xmin0;
 ya = rand(natoms,1)*(ymax0-ymin0) + ymin0;
 
 
-fname = ['./data/random_nx' int2str(nx) '_ny' int2str(ny) '_dk' num2str(dk) '.mat'];
+fname = ['./data/random_nx' int2str(nx) '_ny' int2str(ny) ...
+      '_nover' int2str(nover) '_dk' num2str(dk) '.mat'];
 
 
-ifwrite = 0;
+ifwrite = 1;
 if(ifwrite)
     save(fname,'xa','ya','dk','wavelam');
 end
 
-ifread = 1;
+ifread = 0;
 
 if(ifread)
     B = load(fname);
@@ -86,7 +94,7 @@ rank_or_tol = 1e-6;
 opts = [];
 opts.verb = 1;
 
-tic, F = rskelf(matfun,xflam,occ,rank_or_tol,[],opts); toc
+tic, F = rskelf(matfun,xflam,occ,rank_or_tol,pxyfun,opts); toc
 vsol2 = rskelf_sv(F,vplane2);
 % Mnew = afun(1:natoms,1:natoms,ra,dk,v0,dcorr);
 % vsol2 = Mnew\vplane2;
@@ -171,8 +179,11 @@ a = get(gca,'XTickLabel');
 set(gca,'XTickLabel',a,'fontsize',18);
 
 saveas(gcf,join(['./results/random_nx' int2str(nx) '_ny' ...
-     int2str(ny) '_xdir_msign.pdf']));
- fname_save = ['./data/everything_random_nx' int2str(nx) '_ny' int2str(ny) '_xdir_msign.mat'];
+     int2str(ny) '_nover' int2str(nover) '_xdir_msign.pdf']));
+ fname_save = ['./data/everything_random_nx' int2str(nx) '_ny' int2str(ny) ...
+       '_nover' int2str(nover) '_xdir_msign.mat'];
+   
+clear F
 save(fname_save);
 
 

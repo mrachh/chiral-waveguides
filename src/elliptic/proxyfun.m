@@ -1,6 +1,6 @@
 function [Kpxy,nbr] = proxyfun(xflam,slf,nbr,l,ctr,x,dk,v0,opdims,pr,pin)
 
-   pxy = bsxfun(@plus,pr*l,ctr');
+   pxy = pr.*l + ctr;
    
    
    slfpts = idivide(int64(slf(:)-1),int64(opdims(2)))+1;

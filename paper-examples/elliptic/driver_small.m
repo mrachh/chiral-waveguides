@@ -1,6 +1,10 @@
 clear
+run ../../startup.m
+addpath ../../../fmm2d/matlab
 
-A = load('hyperbolic/data/atoms.mat');
+profile on;
+
+A = load('../hyperbolic/data/atoms.mat');
 xs = 0:0.25/4:15;
 ys = -25:0.25/4:25;
 natoms = A.natoms;
@@ -60,7 +64,8 @@ pg = 0 ;
 pgt = 2;
 [U] = hfmm2d(eps,zk,srcinfo,pg,targs,pgt);
 
-
+profile off
+return
 
 vf1 = dk*squeeze(U.pottarg(1,:).') + 1j*squeeze((U.gradtarg(1,1,:) + U.gradtarg(2,2,:)));
 vf2 = dk*squeeze(U.pottarg(2,:).') + 1j*squeeze((U.gradtarg(1,2,:) - U.gradtarg(2,1,:)));
